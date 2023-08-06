@@ -1,6 +1,7 @@
 import { ChainId } from '@uniswap/sdk-core'
 import bnbCircleLogoUrl from 'assets/images/bnbCircle.svg'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
+import baseLogoUrl from 'assets/images/base.png'
 import polygonCircleLogoUrl from 'assets/images/polygonCircle.png'
 import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'assets/svg/arbitrum_logo.svg'
 import avaxLogo from 'assets/svg/avax_logo.svg'
@@ -17,7 +18,7 @@ import ms from 'ms.macro'
 import { darkTheme } from 'theme/colors'
 
 import { SupportedL1ChainId, SupportedL2ChainId } from './chains'
-import { ARBITRUM_LIST, AVALANCHE_LIST, CELO_LIST, OPTIMISM_LIST, PLASMA_BNB_LIST } from './lists'
+import { ARBITRUM_LIST, AVALANCHE_LIST, CELO_LIST, OPTIMISM_LIST, PLASMA_BNB_LIST, BASE_GOERLI_LIST } from './lists'
 
 export const AVERAGE_L1_BLOCK_TIME = ms`12s`
 
@@ -125,6 +126,40 @@ const CHAIN_INFO: ChainInfoMap = {
     statusPage: 'https://optimism.io/status',
     helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
     nativeCurrency: { name: 'Optimism Goerli Ether', symbol: 'görOpETH', decimals: 18 },
+    color: darkTheme.chain_420,
+  },
+  [ChainId.BASE]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms`25m`,
+    bridge: 'https://bridge.base.org/',
+    defaultListUrl: OPTIMISM_LIST,
+    docs: 'https://docs.base.org/',
+    explorer: 'https://basescan.org/',
+    infoLink: 'https://info.uniswap.org/#/optimism/',
+    label: 'Base',
+    logoUrl: baseLogoUrl,
+    // Optimism perfers same icon for both
+    circleLogoUrl: baseLogoUrl,
+    squareLogoUrl: baseLogoUrl,
+    statusPage: 'https://optimism.io/status',
+    helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    color: darkTheme.chain_10,
+    backgroundColor: darkTheme.chain_10_background,
+  },
+  [ChainId.BASE_GOERLI]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms`25m`,
+    bridge: 'https://bridge.base.org/',
+    defaultListUrl: ARBITRUM_LIST,
+    docs: 'https://goerli-bridge.base.org/deposit',
+    explorer: 'https://goerli.basescan.org/',
+    infoLink: 'https://docs.base.org',
+    label: 'Base Görli',
+    logoUrl: baseLogoUrl,
+    statusPage: 'https://optimism.io/status',
+    helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
+    nativeCurrency: { name: 'Base Goerli Ether', symbol: 'gETH', decimals: 18 },
     color: darkTheme.chain_420,
   },
   [ChainId.ARBITRUM_ONE]: {

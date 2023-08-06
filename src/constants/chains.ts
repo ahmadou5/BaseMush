@@ -1,4 +1,5 @@
 import { ChainId, SUPPORTED_CHAINS, SupportedChainsType } from '@uniswap/sdk-core'
+import { Chain } from 'graphql/data/Token'
 
 export const UniWalletSupportedChains = [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.OPTIMISM, ChainId.POLYGON]
 
@@ -20,7 +21,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [ChainId.BASE_GOERLI]: 'base_goerli',
 } as const
 
-const NOT_YET_UX_SUPPORTED_CHAIN_IDS = [ChainId.BASE, ChainId.BASE_GOERLI] as const
+const NOT_YET_UX_SUPPORTED_CHAIN_IDS = [ChainId.BASE] as const
 
 export function isSupportedChain(chainId: number | null | undefined | ChainId): chainId is SupportedChainsType {
   return !!chainId && SUPPORTED_CHAINS.indexOf(chainId) !== -1 && NOT_YET_UX_SUPPORTED_CHAIN_IDS.indexOf(chainId) === -1
@@ -51,6 +52,7 @@ export const TESTNET_CHAIN_IDS = [
   ChainId.POLYGON_MUMBAI,
   ChainId.ARBITRUM_GOERLI,
   ChainId.OPTIMISM_GOERLI,
+  ChainId.BASE_GOERLI,
   ChainId.CELO_ALFAJORES,
 ] as const
 
@@ -77,6 +79,7 @@ export type SupportedL1ChainId = (typeof L1_CHAIN_IDS)[number]
  */
 export const L2_CHAIN_IDS = [
   ChainId.ARBITRUM_ONE,
+  ChainId.BASE_GOERLI,
   ChainId.ARBITRUM_GOERLI,
   ChainId.OPTIMISM,
   ChainId.OPTIMISM_GOERLI,
@@ -98,6 +101,7 @@ export function getChainPriority(chainId: ChainId): number {
     case ChainId.MAINNET:
     case ChainId.GOERLI:
     case ChainId.SEPOLIA:
+    case ChainId.BASE_GOERLI:
       return 0
     case ChainId.POLYGON:
     case ChainId.POLYGON_MUMBAI:

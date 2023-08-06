@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/macro'
+import { Trace, TraceEvent } from '@uniswap/analytics'
 import { BrowserEvent, InterfaceElementName, InterfacePageName, SharedEventName } from '@uniswap/analytics-events'
-import { Trace, TraceEvent } from 'analytics'
 import { AboutFooter } from 'components/About/AboutFooter'
 import Card, { CardType } from 'components/About/Card'
 import { MAIN_CARDS, MORE_CARDS } from 'components/About/constants'
@@ -10,9 +10,8 @@ import { BaseButton } from 'components/Button'
 import { AppleLogo } from 'components/Logo/AppleLogo'
 import { useDisableNFTRoutes } from 'hooks/useDisableNFTRoutes'
 import Swap from 'pages/Swap'
-import { RedirectPathToSwapOnly } from 'pages/Swap/redirects'
 import { parse } from 'qs'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowDownCircle } from 'react-feather'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Link as NativeLink } from 'react-router-dom'
@@ -22,7 +21,6 @@ import { BREAKPOINTS } from 'theme'
 import { useIsDarkMode } from 'theme/components/ThemeToggle'
 import { TRANSITION_DURATIONS } from 'theme/styles'
 import { Z_INDEX } from 'theme/zIndex'
-import { getDownloadAppLinkProps } from 'utils/openDownloadApp'
 
 const PageContainer = styled.div`
   position: absolute;
@@ -80,7 +78,7 @@ const Glow = styled.div`
   position: absolute;
   top: 68px;
   bottom: 0;
-  background: radial-gradient(72.04% 72.04% at 50% 3.99%, #ff37eb 0%, rgba(166, 151, 255, 0) 100%);
+  background: radial-gradient(72.04% 72.04% at 50% 3.99%, #0066FF 0%, rgba(166, 151, 255, 0) 100%);
   filter: blur(72px);
   border-radius: 24px;
   max-width: 480px;
@@ -117,10 +115,10 @@ const TitleText = styled.h1<{ isDarkMode: boolean }>`
   ${({ isDarkMode }) =>
     isDarkMode
       ? css`
-          background: linear-gradient(20deg, rgba(255, 244, 207, 1) 10%, rgba(255, 87, 218, 1) 100%);
+          background: #0066FF;
         `
       : css`
-          background: linear-gradient(10deg, rgba(255, 79, 184, 1) 0%, rgba(255, 159, 251, 1) 100%);
+          background: #0066FF
         `};
   background-clip: text;
   -webkit-background-clip: text;
@@ -162,13 +160,13 @@ const LandingButton = styled(BaseButton)`
 `
 
 const ButtonCTA = styled(LandingButton)`
-  background: linear-gradient(93.06deg, #ff00c7 2.66%, #ff9ffb 98.99%);
+  background: #0066FF;
   border: none;
   color: ${({ theme }) => theme.white};
   transition: ${({ theme }) => `all ${theme.transition.duration.medium} ${theme.transition.timing.ease}`};
 
   &:hover {
-    box-shadow: 0px 0px 16px 0px #ff00c7;
+    box-shadow: 0px 0px 16px 0px #0066FA;
   }
 `
 
@@ -301,28 +299,35 @@ const Link = styled(NativeLink)`
 
 export default function Landing() {
   const isDarkMode = useIsDarkMode()
+
   const cardsRef = useRef<HTMLDivElement>(null)
+
+  const [showContent, setShowContent] = useState(false)
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const queryParams = parse(location.search, {
+    ignoreQueryPrefix: true,
+  })
+
+  const [accountDrawerOpen] = useAccountDrawer()
+  useEffect(() => {
+    if ((queryParams.intro || !selectedWallet) && !accountDrawerOpen) {
+      setShowContent(true)
+    } else {
+      setShowContent(false)
+      setTimeout(() => {
+        navigate('/swap')
+      }, TRANSITION_DURATIONS.medium)
+    }
+  }, [navigate, selectedWallet, queryParams.intro, accountDrawerOpen])
+
   const shouldDisableNFTRoutes = useDisableNFTRoutes()
+
   const cards = useMemo(
     () => MAIN_CARDS.filter((card) => !(shouldDisableNFTRoutes && card.to.startsWith('/nft'))),
     [shouldDisableNFTRoutes]
   )
-
-  const [accountDrawerOpen] = useAccountDrawer()
-  const navigate = useNavigate()
-  useEffect(() => {
-    if (accountDrawerOpen) {
-      setTimeout(() => {
-        navigate('/swap')
-      }, TRANSITION_DURATIONS.fast)
-    }
-  }, [accountDrawerOpen, navigate])
-
-  const queryParams = parse(useLocation().search, { ignoreQueryPrefix: true })
-  if (selectedWallet && !queryParams.intro) {
-    return <RedirectPathToSwapOnly />
-  }
 
   return (
     <Trace page={InterfacePageName.LANDING_PAGE} shouldLogImpression>
@@ -338,78 +343,76 @@ export default function Landing() {
             </Link>
           </TraceEvent>
         </LandingSwapContainer>
-        <Gradient isDarkMode={isDarkMode} />
-        <GlowContainer>
-          <Glow />
-        </GlowContainer>
-        <ContentContainer isDarkMode={isDarkMode}>
-          <TitleText isDarkMode={isDarkMode}>
-            {shouldDisableNFTRoutes ? (
-              <Trans>Trade crypto with confidence</Trans>
-            ) : (
-              <Trans>Trade crypto and NFTs with confidence</Trans>
-            )}
-          </TitleText>
-          <SubTextContainer>
-            <SubText>
-              {shouldDisableNFTRoutes ? (
-                <Trans>Buy, sell, and explore tokens</Trans>
-              ) : (
-                <Trans>Buy, sell, and explore tokens and NFTs</Trans>
-              )}
-            </SubText>
-          </SubTextContainer>
-          <ActionsContainer>
-            <TraceEvent
-              events={[BrowserEvent.onClick]}
-              name={SharedEventName.ELEMENT_CLICKED}
-              element={InterfaceElementName.CONTINUE_BUTTON}
-            >
-              <ButtonCTA as={Link} to="/swap">
-                <ButtonCTAText>
-                  <Trans>Get started</Trans>
-                </ButtonCTAText>
-              </ButtonCTA>
-            </TraceEvent>
-          </ActionsContainer>
-          <LearnMoreContainer
-            onClick={() => {
-              cardsRef?.current?.scrollIntoView({ behavior: 'smooth' })
-            }}
-          >
-            <Trans>Learn more</Trans>
-            <LearnMoreArrow />
-          </LearnMoreContainer>
+        {showContent && (
+          <>
+            <Gradient isDarkMode={isDarkMode} />
+            <GlowContainer>
+              <Glow />
+            </GlowContainer>
+            <ContentContainer isDarkMode={isDarkMode}>
+              <TitleText isDarkMode={isDarkMode}>
+                {shouldDisableNFTRoutes ? (
+                  <Trans>Swap Tokens Instantly on Base</Trans>
+                ) : (
+                  <Trans>Swap Tokens Instantly on Base</Trans>
+                )}
+              </TitleText>
+              <SubTextContainer>
+                <SubText>
+                  {shouldDisableNFTRoutes ? (
+                    <Trans>Swap ERC20 Tokens, Flip NFTs and Earn rewards</Trans>
+                  ) : (
+                    <Trans>Swap ERC20 Tokens, Flip NFTs and Earn rewards</Trans>
+                  )}
+                </SubText>
+              </SubTextContainer>
+              <ActionsContainer>
+                <TraceEvent
+                  events={[BrowserEvent.onClick]}
+                  name={SharedEventName.ELEMENT_CLICKED}
+                  element={InterfaceElementName.CONTINUE_BUTTON}
+                >
+                  <ButtonCTA as={Link} to="/swap">
+                    <ButtonCTAText>
+                      <Trans>Get started</Trans>
+                    </ButtonCTAText>
+                  </ButtonCTA>
+                </TraceEvent>
+              </ActionsContainer>
+              <LearnMoreContainer
+                onClick={() => {
+                  cardsRef?.current?.scrollIntoView({ behavior: 'smooth' })
+                }}
+              >
+                <Trans>Explore</Trans>
+                <LearnMoreArrow />
+              </LearnMoreContainer>
 
-          <DownloadWalletLink
-            {...getDownloadAppLinkProps({
-              // landing page specific tracking params
-              microSiteParams: `utm_source=home_page&utm_medium=webapp&utm_campaign=wallet_microsite&utm_id=1`,
-              appStoreParams: `ct=Uniswap-Home-Page&mt=8`,
-            })}
-          >
-            <AppleLogo width="20" height="20" />
-            Download the Uniswap Wallet for iOS
-          </DownloadWalletLink>
-        </ContentContainer>
-        <AboutContentContainer isDarkMode={isDarkMode}>
-          <CardGrid cols={cards.length} ref={cardsRef}>
-            {cards.map(({ darkBackgroundImgSrc, lightBackgroundImgSrc, ...card }) => (
-              <Card
-                {...card}
-                backgroundImgSrc={isDarkMode ? darkBackgroundImgSrc : lightBackgroundImgSrc}
-                key={card.title}
-              />
-            ))}
-          </CardGrid>
-          <CardGrid cols={3}>
-            {MORE_CARDS.map(({ darkIcon, lightIcon, ...card }) => (
-              <Card {...card} icon={isDarkMode ? darkIcon : lightIcon} key={card.title} type={CardType.Secondary} />
-            ))}
-          </CardGrid>
-          <ProtocolBanner />
-          <AboutFooter />
-        </AboutContentContainer>
+              {/** <DownloadWalletLink href="https://wallet.uniswap.org/">
+                <AppleLogo width="20" height="20" />
+                Download the Uniswap Wallet for iOS
+              </DownloadWalletLink> **/}
+            </ContentContainer>
+            <AboutContentContainer isDarkMode={isDarkMode}>
+              <CardGrid cols={cards.length} ref={cardsRef}>
+                {cards.map(({ darkBackgroundImgSrc, lightBackgroundImgSrc, ...card }) => (
+                  <Card
+                    {...card}
+                    backgroundImgSrc={isDarkMode ? darkBackgroundImgSrc : lightBackgroundImgSrc}
+                    key={card.title}
+                  />
+                ))}
+              </CardGrid>
+              <CardGrid cols={3}>
+                {MORE_CARDS.map(({ darkIcon, lightIcon, ...card }) => (
+                  <Card {...card} icon={isDarkMode ? darkIcon : lightIcon} key={card.title} type={CardType.Secondary} />
+                ))}
+              </CardGrid>
+               <ProtocolBanner /> 
+              <AboutFooter />
+            </AboutContentContainer>
+          </>
+        )}
       </PageContainer>
     </Trace>
   )

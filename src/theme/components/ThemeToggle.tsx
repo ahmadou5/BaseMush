@@ -11,7 +11,7 @@ import { Segment, SegmentedControl } from './SegmentedControl'
 import { ThemedText } from './text'
 
 const THEME_UPDATE_DELAY = ms`0.1s`
-const DARKMODE_MEDIA_QUERY = window.matchMedia('(prefers-color-scheme: dark)')
+const DARKMODE_MEDIA_QUERY = window.matchMedia('(prefers-color-scheme: light)')
 
 export enum ThemeMode {
   LIGHT,

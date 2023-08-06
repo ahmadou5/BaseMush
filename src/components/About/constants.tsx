@@ -1,5 +1,5 @@
 import { InterfaceElementName } from '@uniswap/analytics-events'
-import { DollarSign, Terminal } from 'react-feather'
+import { DollarSign, Terminal, Hexagon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { lightTheme } from 'theme/colors'
 
@@ -14,21 +14,13 @@ export const MAIN_CARDS = [
   {
     to: '/swap',
     title: 'Swap tokens',
-    description: 'Buy, sell, and explore tokens on Ethereum, Polygon, Optimism, and more.',
+    description: 'Buy, sell, and explore tokens on Base Chain on MushroomSwap.',
     cta: 'Trade Tokens',
     darkBackgroundImgSrc: swapCardImgSrc,
     lightBackgroundImgSrc: swapCardImgSrc,
     elementName: InterfaceElementName.ABOUT_PAGE_SWAP_CARD,
   },
-  {
-    to: '/nfts',
-    title: 'Trade NFTs',
-    description: 'Buy and sell NFTs across marketplaces to find more listings at better prices.',
-    cta: 'Explore NFTs',
-    darkBackgroundImgSrc: nftCardImgSrc,
-    lightBackgroundImgSrc: nftCardImgSrc,
-    elementName: InterfaceElementName.ABOUT_PAGE_NFTS_CARD,
-  },
+  
 ]
 
 const StyledCardLogo = styled.img`
@@ -40,32 +32,24 @@ const StyledCardLogo = styled.img`
 
 export const MORE_CARDS = [
   {
-    to: 'https://support.uniswap.org/hc/en-us/articles/11306574799117-How-to-use-Moon-Pay-on-the-Uniswap-web-app-',
-    external: true,
-    title: 'Buy crypto',
-    description: 'Buy crypto with your credit card or bank account at the best rates.',
-    lightIcon: <DollarSign color={lightTheme.textTertiary} size={48} />,
-    darkIcon: <StyledCardLogo src={darkDollarImgSrc} alt="Earn" />,
-    cta: 'Buy now',
-    elementName: InterfaceElementName.ABOUT_PAGE_BUY_CRYPTO_CARD,
-  },
-  {
     to: '/pools',
     title: 'Earn',
-    description: 'Provide liquidity to pools on Uniswap and earn fees on swaps.',
+    description: 'Provide liquidity to pools on MushroomSwap and earn fees on swaps.',
     lightIcon: <StyledCardLogo src={lightArrowImgSrc} alt="Analytics" />,
     darkIcon: <StyledCardLogo src={darkArrowImgSrc} alt="Analytics" />,
     cta: 'Provide liquidity',
     elementName: InterfaceElementName.ABOUT_PAGE_EARN_CARD,
   },
   {
-    to: 'https://docs.uniswap.org',
+    to: 'https://support.uniswap.org/hc/en-us/articles/11306574799117-How-to-use-Moon-Pay-on-the-Uniswap-web-app-',
     external: true,
-    title: 'Build dApps',
-    description: 'Build apps and tools on the largest DeFi protocol on Ethereum.',
-    lightIcon: <Terminal color={lightTheme.textTertiary} size={48} />,
-    darkIcon: <StyledCardLogo src={darkTerminalImgSrc} alt="Developers" />,
-    cta: 'Developer docs',
-    elementName: InterfaceElementName.ABOUT_PAGE_DEV_DOCS_CARD,
+    title: 'Connect',
+    description: 'Explore Our Vibrant Fung-tastic Community.',
+    lightIcon: <Hexagon color={lightTheme.textTertiary} size={48} />,
+    darkIcon: <StyledCardLogo src={darkDollarImgSrc} alt="Earn" />,
+    cta: 'Join Community',
+    elementName: InterfaceElementName.ABOUT_PAGE_BUY_CRYPTO_CARD,
   },
+  
+  
 ]

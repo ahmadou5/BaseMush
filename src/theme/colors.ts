@@ -4,6 +4,7 @@ import { opacify } from './utils'
 export const colors = {
   white: '#FFFFFF',
   black: '#000000',
+  blue1: "#0066FF",
   gray50: '#F5F6FC',
   gray100: '#E8ECFB',
   gray150: '#D2D9EE',
@@ -82,6 +83,7 @@ export const colors = {
   blue800: '#0B193F',
   blue900: '#040E34',
   blueVibrant: '#587BFF',
+  blablue: "#0066FF",
   // TODO: add magenta 50-900
   magenta300: '#FD82FF',
   magentaVibrant: '#FC72FF',
@@ -137,7 +139,7 @@ export const darkTheme = {
 
   userThemeColor: colors.magentaVibrant,
 
-  background: colors.gray800,
+  background: colors.white,
   backgroundBackdrop: colors.gray950,
   backgroundSurface: colors.gray900,
   backgroundModule: colors.gray800,
@@ -181,7 +183,7 @@ export const darkTheme = {
   stateOverlayPressed: opacify(24, colors.gray200),
 
   searchBackground: `rgba(255,255,255,0.07)`,
-  searchOutline: `rgba(255,255,255,0.07)`,
+  searchOutline: `rgba(255,255,255,0.07)`, 
 }
 
 export const lightTheme: Theme = {
@@ -189,7 +191,7 @@ export const lightTheme: Theme = {
 
   userThemeColor: colors.magentaVibrant,
 
-  background: '#faf9fa', //INTENTIONALLY OFF THEME TO GIVE WHITE BG A SOFTER VISUAL
+  background: colors.white, //INTENTIONALLY OFF THEME TO GIVE WHITE BG A SOFTER VISUAL
   backgroundBackdrop: colors.white,
   backgroundSurface: colors.white,
   backgroundModule: colors.gray50,
@@ -203,14 +205,14 @@ export const lightTheme: Theme = {
   textSecondary: colors.gray400,
   textTertiary: colors.gray300,
 
-  accentAction: colors.pink400,
+  accentAction: colors.blablue,
   accentActive: colors.blue400,
   accentSuccess: colors.green300,
   accentWarning: colors.gold400,
   accentFailure: colors.red400,
   accentCritical: colors.red400,
 
-  accentActionSoft: opacify(12, colors.pink400),
+  accentActionSoft: opacify(12, colors.blablue),
   accentActiveSoft: opacify(24, colors.blue400),
   accentSuccessSoft: opacify(24, colors.green300),
   accentWarningSoft: opacify(24, colors.gold400),
